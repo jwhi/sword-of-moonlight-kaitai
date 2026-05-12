@@ -68,6 +68,21 @@ types:
         type: u4
       - id: condition
         type: evt_condition
+    instances:
+      body:
+        io: _root._io
+        pos: payload_offset
+        type: evt_operation
+        repeat: until
+        repeat-until: _.op_id == operation_type::end
+        
+  evt_operation:
+    seq:
+      - id: op_id
+        type: u2
+        enum: operation_type
+      - id: op_size
+        type: u2
     
 enums:
   comparison_type:
@@ -99,3 +114,44 @@ enums:
     4: magic
     5: level
     6: counter
+  operation_type:
+    0: display_message
+    1: display_formatted_message
+    23: shop_open
+    25: warp_npc
+    26: warp_enemy
+    20: activate_npc
+    21: activate_enemy
+    22: activate_item
+    27: terminate_npc
+    28: terminate_enemy
+    40: begin_screen_effect
+    41: end_screen_effect
+    42: display_bmp
+    43: display_movie
+    44: play_sound_effect
+    45: change_bgm
+    46: bgm_on_off
+    60: warp_player_detailed
+    61: warp_player_basic
+    80: change_player_parameter
+    81: change_player_status
+    82: learn_magic
+    83: recover_all
+    84: set_player_parameter_in_counter
+    100: object_animation_on_off
+    101: display_object_on_off
+    102: move_object
+    120: change_dash_save_temporarily
+    121: save_point
+    122: end_game
+    140: if_counter_condition
+    141: if_message_prompt
+    142: otherwise
+    143: end_if
+    144: change_counter
+    145: change_page
+    148: generate_random_counter_value
+    149: start_timer
+    150: set_timer_value_in_counter
+    65535: end 
