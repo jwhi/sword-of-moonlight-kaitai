@@ -106,6 +106,12 @@ types:
             operation_type::bgm_playback: bgm_playback
             operation_type::warp_player_detailed: warp_player_detailed
             operation_type::warp_player_basic: warp_player_basic
+            operation_type::change_player_parameter: change_player_parameter
+            operation_type::change_player_status: change_player_status
+            operation_type::learn_magic: learn_magic
+            operation_type::set_player_parameter_in_counter: set_player_parameter_in_counter
+            operation_type::object_animation: object_animation
+            operation_type::display_object: display_object
   display_message:
     seq:
       - id: text
@@ -299,6 +305,53 @@ types:
         type: b1
       - id: set_fine_z
         type: b1
+  change_player_parameter:
+    seq:
+      - id: parameter
+        type: u1
+        enum: player_parameter
+      - id: way_changed
+        type: u1
+        enum: way_changed
+      - id: item_id
+        type: u2
+      - id: padding
+        type: u2
+      - id: value
+        type: u2
+  change_player_status:
+    seq:
+      - id: status
+        type: u1
+        enum: player_status
+      - id: enabled
+        type: b1
+  learn_magic:
+    seq:
+      - id: magic_table_id
+        type: u2
+  set_player_parameter_in_counter:
+    seq:
+      - id: parameter
+        type: u1
+        enum: player_parameter
+      - id: item_id
+        type: u1
+      - id: counter_id
+        type: u2
+  object_animation:
+    seq:
+      - id: id
+        type: u2
+      - id: playback
+        type: u2
+        enum: playback
+  display_object:
+    seq:
+      - id: id
+        type: u2
+      - id: display
+        type: b1
 enums:
   comparison_type:
     0: equals
@@ -354,8 +407,8 @@ enums:
     82: learn_magic
     83: recover_all
     84: set_player_parameter_in_counter
-    100: object_animation_on_off
-    101: display_object_on_off
+    100: object_animation
+    101: display_object
     102: move_object
     120: change_dash_save_temporarily
     121: save_point
@@ -386,3 +439,22 @@ enums:
   playback:
     0: stop
     1: play
+  player_parameter:
+    0: hp
+    1: mp
+    2: strength
+    3: magic
+    4: item_quantity
+    5: gold
+    6: level
+  way_changed:
+    0: set_to
+    1: increment_by
+    2: decrement_by
+    3: counter
+  player_status:
+    0: poison
+    1: paralyze
+    2: dark
+    3: curse
+    4: slow
