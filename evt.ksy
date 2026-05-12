@@ -83,6 +83,10 @@ types:
         enum: operation_type
       - id: op_size
         type: u2
+      - id: body
+        type: str
+        encoding: ascii
+        size: op_size - 4
     
 enums:
   comparison_type:
