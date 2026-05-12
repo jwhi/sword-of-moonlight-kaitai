@@ -70,6 +70,7 @@ types:
         type: evt_condition
     instances:
       body:
+        if: payload_offset > 0
         io: _root._io
         pos: payload_offset
         type: evt_operation
