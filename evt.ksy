@@ -112,6 +112,8 @@ types:
             operation_type::set_player_parameter_in_counter: set_player_parameter_in_counter
             operation_type::object_animation: object_animation
             operation_type::display_object: display_object
+            operation_type::move_object: move_object
+            operation_type::change_dash_or_save_temporarily: change_dash_or_save_temporarily
   display_message:
     seq:
       - id: text
@@ -352,6 +354,40 @@ types:
         type: u2
       - id: display
         type: b1
+  move_object:
+    seq:
+      - id: id
+        type: u2
+      - id: x
+        type: u1
+      - id: z
+        type: u1
+      - id: angle_x
+        type: u2
+      - id: angle_y
+        type: u2
+      - id: angle_z
+        type: u2
+      - id: move_time
+        type: u2
+      - id: fine_x
+        type: f4
+      - id: fine_y
+        type: f4
+      - id: fine_z
+        type: f4
+  change_dash_or_save_temporarily:
+    seq:
+      - id: target
+        type: u1
+        enum: temporarily_change_target
+      - id: enabled
+        type: b1
+  end_game:
+    seq:
+      - id: ending
+        type: u1
+        enum: ending
 enums:
   comparison_type:
     0: equals
@@ -410,7 +446,7 @@ enums:
     100: object_animation
     101: display_object
     102: move_object
-    120: change_dash_save_temporarily
+    120: change_dash_or_save_temporarily
     121: save_point
     122: end_game
     140: if_counter_condition
@@ -458,3 +494,11 @@ enums:
     2: dark
     3: curse
     4: slow
+  temporarily_change_target:
+    0: dash
+    1: save
+  ending:
+    0: normal_end
+    1: ending_1
+    2: ending_2
+    3: ending_3
