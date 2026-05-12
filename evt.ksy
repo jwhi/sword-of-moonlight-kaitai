@@ -73,10 +73,9 @@ types:
         if: payload_offset > 0
         io: _root._io
         pos: payload_offset
-        type: evt_operation
         repeat: until
         repeat-until: _.op_id == operation_type::end
-        
+        type: evt_operation
   evt_operation:
     seq:
       - id: op_id
@@ -84,10 +83,41 @@ types:
         enum: operation_type
       - id: op_size
         type: u2
-      - id: body
-        type: str
-        encoding: ascii
+      - id: operation
         size: op_size - 4
+        type:
+          switch-on: op_id
+          cases:
+            operation_type::display_message: display_message
+            operation_type::display_formatted_message: display_formatted_message
+  display_message:
+    seq:
+      - id: text
+        type: str
+        encoding: utf8
+        terminator: 0
+  display_formatted_message:
+    seq:
+      - id: red
+        type: u1
+      - id: green
+        type: u1
+      - id: blue
+        type: u1
+      - id: alpha
+        type: u1
+      - id: font_weight
+        type: u2
+      - id: padding
+        type: u2
+      - id: text
+        type: str
+        encoding: utf8
+        terminator: 0
+      - id: font
+        type: str
+        encoding: utf8
+        terminator: 0
     
 enums:
   comparison_type:
@@ -159,4 +189,4 @@ enums:
     148: generate_random_counter_value
     149: start_timer
     150: set_timer_value_in_counter
-    65535: end 
+    65535: end
