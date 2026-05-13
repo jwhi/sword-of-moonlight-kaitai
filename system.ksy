@@ -15,6 +15,10 @@ seq:
     type: class_data
   - id: magic_table
     type: magic_table
+  - id: menu_configuration
+    type: menu_configuration
+  - id: messages
+    type: messages
 types:
   sequence_settings:
       seq:
@@ -111,6 +115,9 @@ types:
         repeat: expr
         repeat-expr: 4
   magic:
+    doc: |
+      Parses the two seperate arrays into a single
+      object to represent each row of the magic table.
     params:
       - id: i
         type: u1
@@ -137,6 +144,79 @@ types:
         type: magic(_index)
         repeat: expr
         repeat-expr: 32
+  menu_configuration:
+    seq:
+      - id: allow_save_in_menu_flag
+        type: u1
+      - id: enable_equipment_weight_limit_flag
+        type: u1
+      - id: compass
+        type: u1
+        doc: |
+          Compass 0 is NONE.
+          Maximum: 4
+      - id: gauge
+        type: u1
+        doc: |
+          Guage 0 is NONE.
+          Maximum: 4
+      - id: padding
+        type: u1
+      - id: menu_style
+        type: u1
+        doc: |
+          Menu Style 0 is NONE.
+          Maxmimum: 4
+    instances:
+      allow_save_in_menu:
+        value: allow_save_in_menu_flag != 0
+  messages:
+    doc: |
+      Missing some text that is in UI
+      Missing:
+        unlocked with key: (empty string)
+        # At offset 83 60 00
+        nothing inside: EMPTY
+        # At offset 83 89 09
+        seems_to_be_dead: HE IS DEAD
+    seq:
+      - id: sealed
+        type: strz
+        encoding: utf-8
+        size: 41
+      - id: locked
+        type: strz
+        encoding: utf-8
+        size: 41
+      - id: wrong_key
+        type: strz
+        encoding: utf-8
+        size: 41
+      - id: nothing_happens
+        type: strz
+        encoding: utf-8
+        size: 41
+      - id: not_enough_mp
+        type: strz
+        encoding: utf-8
+        size: 41
+      - id: level_increased
+        type: strz
+        encoding: utf-8
+        size: 41
+      - id: magic_learned
+        type: strz
+        encoding: utf-8
+        size: 41
+      - id: strength_increased
+        type: strz
+        encoding: utf-8
+        size: 41
+      - id: magic_increased
+        type: strz
+        encoding: utf-8
+        size: 41
+    
 enums:
   sequence_mode:
     0: none
