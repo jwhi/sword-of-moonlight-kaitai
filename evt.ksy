@@ -21,9 +21,9 @@ types:
   evt_definition:
     seq:
       - id: name
-        type: str
+        type: strz
         size: 31
-        encoding: utf8
+        encoding: UTF-8
       - id: target_type
         type: u1
         enum: target_type
@@ -124,9 +124,8 @@ types:
   display_message:
     seq:
       - id: text
-        type: str
-        encoding: utf8
-        terminator: 0
+        type: strz
+        encoding: UTF-8
   display_formatted_message:
     seq:
       - id: red
@@ -142,13 +141,11 @@ types:
       - id: padding
         type: u2
       - id: text
-        type: str
-        encoding: utf8
-        terminator: 0
+        type: strz
+        encoding: UTF-8
       - id: font
-        type: str
-        encoding: utf8
-        terminator: 0
+        type: strz
+        encoding: UTF-8
   shop_open:
     seq:
       - id: shop_id
@@ -226,15 +223,13 @@ types:
       - id: padding
         type: u2
       - id: filename
-        type: str
-        encoding: utf8
-        terminator: 0
+        type: strz
+        encoding: UTF-8
   display_movie:
     seq:
       - id: filename
-        type: str
-        encoding: utf8
-        terminator: 0
+        type: strz
+        encoding: UTF-8
   play_sound_effect:
     seq:
       - id: id
@@ -246,9 +241,8 @@ types:
       - id: padding
         type: u2
       - id: filename
-        type: str
-        encoding: utf8
-        terminator: 0
+        type: strz
+        encoding: UTF-8
     instances:
       loop:
         value: loop_flag != 0
@@ -412,17 +406,14 @@ types:
   if_prompt:
     seq:
       - id: text
-        type: str
-        encoding: utf8
-        terminator: 0
+        type: strz
+        encoding: UTF-8
       - id: option_1
-        type: str
-        encoding: utf8
-        terminator: 0
+        type: strz
+        encoding: UTF-8
       - id: option_2
-        type: str
-        encoding: utf8
-        terminator: 0
+        type: strz
+        encoding: UTF-8
   change_counter:
     seq:
       - id: id
