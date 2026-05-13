@@ -114,6 +114,13 @@ types:
             operation_type::display_object: display_object
             operation_type::move_object: move_object
             operation_type::change_dash_or_save_temporarily: change_dash_or_save_temporarily
+            operation_type::if_counter: if_counter
+            operation_type::if_prompt: if_prompt
+            operation_type::change_counter: change_counter
+            operation_type::change_page: change_page
+            operation_type::generate_random_counter_value: generate_random_counter_value
+            operation_type::start_timer: start_timer
+            operation_type::set_timer_value_in_counter: set_timer_value_in_counter
   display_message:
     seq:
       - id: text
@@ -151,7 +158,7 @@ types:
       - id: npc_id
         type: u2
       - id: x
-        type: u2
+        type: u1
       - id: z
         type: u1
       - id: direction
@@ -169,7 +176,7 @@ types:
       - id: enemy_id
         type: u2
       - id: x
-        type: u2
+        type: u1
       - id: z
         type: u1
       - id: direction
@@ -388,6 +395,87 @@ types:
       - id: ending
         type: u1
         enum: ending
+  if_counter:
+    seq:
+      - id: id
+        type: u2
+      - id: value
+        type: u2
+      - id: value_is_counter_id_flag
+        type: u1
+      - id: comparison_type
+        type: u1
+        enum: comparison_type
+    instances:
+      value_is_counter_id:
+        value: value_is_counter_id_flag != 0
+  if_prompt:
+    seq:
+      - id: text
+        type: str
+        encoding: utf8
+        terminator: 0
+      - id: option_1
+        type: str
+        encoding: utf8
+        terminator: 0
+      - id: option_2
+        type: str
+        encoding: utf8
+        terminator: 0
+  change_counter:
+    seq:
+      - id: id
+        type: u2
+      - id: value
+        type: u2
+      - id: value_is_counter_id_flag
+        type: u1
+      - id: way_changed
+        type: u1
+        enum: way_changed
+    instances:
+      value_is_counter_id:
+        value: value_is_counter_id_flag != 0
+  change_page:
+    seq:
+      - id: target
+        type: u2
+      - id: change_page_type
+        type: u1
+        enum: change_page_type
+      - id: value
+        type: u1
+    instances:
+      change_to_page:
+        value: value
+        if: change_page_type == change_page_type::specific
+  generate_random_counter_value:
+    seq:
+      - id: use_counter_for_max_value_flag
+        type: u1
+      - id: padding
+        type: u2
+      - id: max_value
+        type: u2
+      - id: id
+        type: u2
+    instances:
+      use_counter_for_max_value:
+        value: use_counter_for_max_value_flag != 0
+  start_timer:
+    seq:
+      - id: id
+        type: u1
+  set_timer_value_in_counter:
+    seq:
+      - id: id
+        type: u1
+      - id: padding
+        type: u1
+      - id: destination_counter_id
+        type: u2
+      
 enums:
   comparison_type:
     0: equals
@@ -449,8 +537,8 @@ enums:
     120: change_dash_or_save_temporarily
     121: save_point
     122: end_game
-    140: if_counter_condition
-    141: if_message_prompt
+    140: if_counter
+    141: if_prompt
     142: otherwise
     143: end_if
     144: change_counter
@@ -502,3 +590,7 @@ enums:
     1: ending_1
     2: ending_2
     3: ending_3
+  change_page_type:
+    0: forward
+    1: back
+    2: specific
