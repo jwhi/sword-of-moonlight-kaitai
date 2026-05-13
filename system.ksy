@@ -119,6 +119,9 @@ types:
         value: _parent.ids[i]
       level_requirement:
         value: _parent.levels[i]
+        if: _parent.levels[i] != 101
+      learn_by_event:
+        value: _parent.levels[i] == 101
   magic_table:
     seq:
       - id: ids
