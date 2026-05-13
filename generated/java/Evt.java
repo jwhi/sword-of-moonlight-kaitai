@@ -1004,7 +1004,7 @@ public class Evt extends KaitaiStruct {
             _read();
         }
         private void _read() {
-            this.name = new String(this._io.readBytes(31), StandardCharsets.UTF_8);
+            this.name = new String(KaitaiStream.bytesTerminate(this._io.readBytes(31), (byte) 0, false), StandardCharsets.UTF_8);
             this.targetType = Evt.TargetType.byId(this._io.readU1());
             this.targetId = this._io.readU2le();
             this.triggerType = Evt.TriggerType.byId(this._io.readU1());

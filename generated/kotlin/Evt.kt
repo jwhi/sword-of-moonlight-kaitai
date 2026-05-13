@@ -1232,7 +1232,10 @@ class Evt @JvmOverloads constructor(_io: KaitaiStream?, private val _parent: Kai
         private val _root: Evt? = null
     ) : KaitaiStruct(_io) {
         private fun _read() {
-            this.name = String(this._io.readBytes(31), StandardCharsets.UTF_8)
+            this.name = String(
+                KaitaiStream.bytesTerminate(this._io.readBytes(31), 0.toByte(), false),
+                StandardCharsets.UTF_8
+            )
             this.targetType = TargetType.byId(this._io.readU1().toLong())
             this.targetId = this._io.readU2le()
             this.triggerType = TriggerType.byId(this._io.readU1().toLong())
