@@ -13,6 +13,8 @@ seq:
     type: player_speed
   - id: class_data
     type: class_data
+  - id: magic_table
+    type: magic_table
 types:
   sequence_settings:
       seq:
@@ -108,6 +110,30 @@ types:
         type: u2
         repeat: expr
         repeat-expr: 4
+  magic:
+    params:
+      - id: i
+        type: u1
+    instances:
+      id:
+        value: _parent.ids[i]
+      level_requirement:
+        value: _parent.levels[i]
+  magic_table:
+    seq:
+      - id: ids
+        type: u1
+        repeat: expr
+        repeat-expr: 32
+      - id: levels
+        type: u1
+        repeat: expr
+        repeat-expr: 32
+    instances:
+      magic:
+        type: magic(_index)
+        repeat: expr
+        repeat-expr: 32
 enums:
   sequence_mode:
     0: none
