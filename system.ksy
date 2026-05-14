@@ -25,7 +25,7 @@ seq:
     repeat-expr: 164
   - id: currency_unit
     type: strz
-    encoding: SHIFT-JIS
+    encoding: Shift_JIS
     size: 3
 types:
   sequence_settings:
@@ -133,10 +133,9 @@ types:
       id:
         value: _parent.ids[i]
       level_requirement:
-        value: _parent.levels[i]
-        if: _parent.levels[i] != 101
+        value: _parent.levels[i] % 100
       learn_by_event:
-        value: _parent.levels[i] == 101
+        value: _parent.levels[i] > 100
   magic_table:
     seq:
       - id: ids
@@ -150,8 +149,8 @@ types:
     instances:
       magic:
         type: magic(_index)
-        repeat: expr
-        repeat-expr: 32
+        repeat: until
+        repeat-until: _.id == 255
   menu_configuration:
     seq:
       - id: allow_save_in_menu_flag
