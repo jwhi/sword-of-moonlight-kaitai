@@ -39,6 +39,29 @@ seq:
     size: 31
     repeat: expr
     repeat-expr: 1024
+  - id: unknown2
+    type: u1
+    repeat: expr
+    repeat-expr: 1
+  - id: sounds
+    doc: |
+      0 padded filename of sound effect in Sword of Moonlight's se folder
+      (Sword of Moonlight\data\sound\se).
+      Max value 0xFFFF (65535) is NONE (no sound effect set).
+      
+      Example:
+      Sound 539 (0x21B) is 0539.snd (Wind sound effect)
+    doc-ref:
+      - https://doc.swordofmoonlight.com/editor/contentauthoring/auth-sounds/
+      - https://doc.swordofmoonlight.com/editor/ff/snd-file-format/
+    type: u2
+    repeat: expr
+    repeat-expr: 16
+  - id: menu_background_filename
+    type: strz
+    size: 38
+    encoding: Shift_JIS
+  
 types:
   sequence_settings:
       seq:
