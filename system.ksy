@@ -45,7 +45,7 @@ seq:
     size: 31
     repeat: expr
     repeat-expr: 1024
-  - id: unknown2
+  - id: unknown
     type: u1
     repeat: expr
     repeat-expr: 1
