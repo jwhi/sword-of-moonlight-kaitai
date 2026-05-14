@@ -86,50 +86,50 @@ types:
       - id: title_sequence_filename
         type: strz
         size: 31
-        encoding: UTF-8
+        encoding: Shift_JIS
       - id: title_image
         type: strz
         size: 31
-        encoding: UTF-8
+        encoding: Shift_JIS
       - id: opening_sequence_mode
         type: u1
         enum: sequence_mode
       - id: opening_sequence_filename
         type: strz
         size: 31
-        encoding: UTF-8
+        encoding: Shift_JIS
       - id: ending1_sequence_mode
         type: u1
         enum: sequence_mode
       - id: ending1_sequence_filename
         type: strz
         size: 31
-        encoding: UTF-8
+        encoding: Shift_JIS
       - id: ending2_sequence_mode
         type: u1
         enum: sequence_mode
       - id: ending2_filename
         type: strz
         size: 31
-        encoding: UTF-8
+        encoding: Shift_JIS
       - id: ending3_mode
         type: u1
         enum: sequence_mode
       - id: ending3_filename
         type: strz
         size: 31
-        encoding: UTF-8
+        encoding: Shift_JIS
       - id: credits_mode
         type: u1
         enum: sequence_mode
       - id: credits_filename
         type: strz
         size: 31
-        encoding: UTF-8
+        encoding: Shift_JIS
       - id: credits_final_image_filename
         type: strz
         size: 31
-        encoding: UTF-8
+        encoding: Shift_JIS
   player_speed:
     seq:
       - id: walk
@@ -161,7 +161,7 @@ types:
       - id: names
         type: strz
         size: 15
-        encoding: UTF-8
+        encoding: Shift_JIS
         repeat: expr
         repeat-expr: 25
       - id: strength_tiers
@@ -239,39 +239,39 @@ types:
     seq:
       - id: sealed
         type: strz
-        encoding: utf-8
+        encoding: Shift_JIS
         size: 41
       - id: locked
         type: strz
-        encoding: utf-8
+        encoding: Shift_JIS
         size: 41
       - id: wrong_key
         type: strz
-        encoding: utf-8
+        encoding: Shift_JIS
         size: 41
       - id: nothing_happens
         type: strz
-        encoding: utf-8
+        encoding: Shift_JIS
         size: 41
       - id: not_enough_mp
         type: strz
-        encoding: utf-8
+        encoding: Shift_JIS
         size: 41
       - id: level_increased
         type: strz
-        encoding: utf-8
+        encoding: Shift_JIS
         size: 41
       - id: magic_learned
         type: strz
-        encoding: utf-8
+        encoding: Shift_JIS
         size: 41
       - id: strength_increased
         type: strz
-        encoding: utf-8
+        encoding: Shift_JIS
         size: 41
       - id: magic_increased
         type: strz
-        encoding: utf-8
+        encoding: Shift_JIS
         size: 41
   inventory_item:
     doc: |
