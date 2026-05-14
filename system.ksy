@@ -19,6 +19,14 @@ seq:
     type: menu_configuration
   - id: messages
     type: messages
+  - id: unknown
+    type: u1
+    repeat: expr
+    repeat-expr: 164
+  - id: currency_unit
+    type: strz
+    encoding: SHIFT-JIS
+    size: 3
 types:
   sequence_settings:
       seq:
