@@ -27,6 +27,10 @@ seq:
     type: strz
     encoding: Shift_JIS
     size: 3
+  - id: player_config
+    type: player_config
+  - id: player_config_test_play
+    type: player_config
 types:
   sequence_settings:
       seq:
@@ -223,7 +227,59 @@ types:
         type: strz
         encoding: utf-8
         size: 41
-    
+  inventory_item:
+    doc: |
+      Takes an array index between 0 and 250
+      Max item id is 249 but space is allocated to 250
+      in player config.
+      Corresponds to item id
+    params:
+      - id: item_id
+        type: u1
+    instances:
+      quantity:
+        value: _parent.inventory_count[item_id]
+  player_config:
+    seq:
+      - id: initial_strength
+        type: u2
+      - id: initial_magic
+        type: u2
+      - id: initial_hp
+        type: u2
+      - id: initial_mp
+        type: u2
+      - id: initial_gold
+        type: u4
+      - id: initial_experience
+        type: u4
+      - id: initial_level
+        type: u1
+      - id: weapon
+        type: u1
+      - id: head_armor
+        type: u1
+      - id: chest_armor
+        type: u1
+      - id: hands_armor
+        type: u1
+      - id: feet_armor
+        type: u1
+      - id: shield
+        type: u1
+      - id: accessory
+        type: u1
+      - id: magic
+        type: u1
+      - id: inventory_count
+        type: u1
+        repeat: expr
+        repeat-expr: 251
+    instances:
+      inventory:
+        type: inventory_item(_index)
+        repeat: expr
+        repeat-expr: 251
 enums:
   sequence_mode:
     0: none
