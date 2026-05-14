@@ -31,6 +31,14 @@ seq:
     type: player_config
   - id: player_config_test_play
     type: player_config
+  - id: starting_map
+    type: u1
+  - id: counter_names
+    type: strz
+    encoding: Shift_JIS
+    size: 31
+    repeat: expr
+    repeat-expr: 1024
 types:
   sequence_settings:
       seq:
