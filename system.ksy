@@ -4,6 +4,11 @@ meta:
   ks-version: 0.9
   endian: le
   bit-endian: le
+doc: |
+  Sword of Moonlight SYS.dat file.
+  Stores game specific information and counter names used in map events.
+doc-ref:
+  - https://doc.swordofmoonlight.com/editor/ff/param-system-file-formats/
 seq:
   - id: sequence_settings
     type: sequence_settings
@@ -61,7 +66,17 @@ seq:
     type: strz
     size: 38
     encoding: Shift_JIS
-  
+  - id: messages_additional
+    type: messages_additional
+  - id: menu_sound_effect
+    doc: |
+      Default menu sound effect.
+      0 = NONE
+      1-4 = Menu sound effect
+    type: u1
+  - id: ending_padding
+    type: u1
+    repeat: eos
 types:
   sequence_settings:
       seq:
@@ -311,6 +326,20 @@ types:
         type: inventory_item(_index)
         repeat: expr
         repeat-expr: 251
+  messages_additional:
+    seq:
+      - id: nothing_inside
+        type: strz
+        encoding: Shift_JIS
+        size: 41
+      - id: seems_to_be_dead
+        type: strz
+        encoding: Shift_JIS
+        size: 41
+      - id: unlocked_with_key
+        type: strz
+        encoding: Shift_JIS
+        size: 41
 enums:
   sequence_mode:
     0: none
