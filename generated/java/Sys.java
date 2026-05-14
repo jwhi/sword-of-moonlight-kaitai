@@ -6,8 +6,8 @@ import io.kaitai.struct.KaitaiStream;
 import java.io.IOException;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.ArrayList;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -78,10 +78,7 @@ public class Sys extends KaitaiStruct {
         this.magicTable = new MagicTable(this._io, this, _root);
         this.menuConfiguration = new MenuConfiguration(this._io, this, _root);
         this.messages = new Messages(this._io, this, _root);
-        this.unknown = new ArrayList<Integer>();
-        for (int i = 0; i < 164; i++) {
-            this.unknown.add(this._io.readU1());
-        }
+        this.systemMessages = new SystemMessages(this._io, this, _root);
         this.currencyUnit = new String(KaitaiStream.bytesTerminate(this._io.readBytes(3), (byte) 0, false), Charset.forName("Shift_JIS"));
         this.playerConfig = new PlayerConfig(this._io, this, _root);
         this.playerConfigTestPlay = new PlayerConfig(this._io, this, _root);
@@ -90,9 +87,9 @@ public class Sys extends KaitaiStruct {
         for (int i = 0; i < 1024; i++) {
             this.counterNames.add(new String(KaitaiStream.bytesTerminate(this._io.readBytes(31), (byte) 0, false), Charset.forName("Shift_JIS")));
         }
-        this.unknown2 = new ArrayList<Integer>();
+        this.unknown = new ArrayList<Integer>();
         for (int i = 0; i < 1; i++) {
-            this.unknown2.add(this._io.readU1());
+            this.unknown.add(this._io.readU1());
         }
         this.sounds = new ArrayList<Integer>();
         for (int i = 0; i < 16; i++) {
@@ -118,13 +115,12 @@ public class Sys extends KaitaiStruct {
         this.magicTable._fetchInstances();
         this.menuConfiguration._fetchInstances();
         this.messages._fetchInstances();
-        for (int i = 0; i < this.unknown.size(); i++) {
-        }
+        this.systemMessages._fetchInstances();
         this.playerConfig._fetchInstances();
         this.playerConfigTestPlay._fetchInstances();
         for (int i = 0; i < this.counterNames.size(); i++) {
         }
-        for (int i = 0; i < this.unknown2.size(); i++) {
+        for (int i = 0; i < this.unknown.size(); i++) {
         }
         for (int i = 0; i < this.sounds.size(); i++) {
         }
@@ -421,13 +417,7 @@ public class Sys extends KaitaiStruct {
     }
 
     /**
-     * Missing some text that is in UI
-     * Missing:
-     *   unlocked with key: (empty string)
-     *   # At offset 83 60 00
-     *   nothing inside: EMPTY
-     *   # At offset 83 89 09
-     *   seems_to_be_dead: HE IS DEAD
+     * Messages tab is split between here and additional messages field.
      */
     public static class Messages extends KaitaiStruct {
         public static Messages fromFile(String fileName) throws IOException {
@@ -748,6 +738,73 @@ public class Sys extends KaitaiStruct {
         public Sys _root() { return _root; }
         public Sys _parent() { return _parent; }
     }
+
+    /**
+     * Defined in example project, but don't seem to be defined in new projects
+     * for the english translation patch 1.2.
+     * Provided example values and translation for each field.
+     */
+    public static class SystemMessages extends KaitaiStruct {
+        public static SystemMessages fromFile(String fileName) throws IOException {
+            return new SystemMessages(new ByteBufferKaitaiStream(fileName));
+        }
+
+        public SystemMessages(KaitaiStream _io) {
+            this(_io, null, null);
+        }
+
+        public SystemMessages(KaitaiStream _io, Sys _parent) {
+            this(_io, _parent, null);
+        }
+
+        public SystemMessages(KaitaiStream _io, Sys _parent, Sys _root) {
+            super(_io);
+            this._parent = _parent;
+            this._root = _root;
+            _read();
+        }
+        private void _read() {
+            this.saving = new String(KaitaiStream.bytesTerminate(this._io.readBytes(41), (byte) 0, false), Charset.forName("Shift_JIS"));
+            this.saveComplete = new String(KaitaiStream.bytesTerminate(this._io.readBytes(41), (byte) 0, false), Charset.forName("Shift_JIS"));
+            this.loading = new String(KaitaiStream.bytesTerminate(this._io.readBytes(41), (byte) 0, false), Charset.forName("Shift_JIS"));
+            this.loadComplete = new String(KaitaiStream.bytesTerminate(this._io.readBytes(41), (byte) 0, false), Charset.forName("Shift_JIS"));
+        }
+
+        public void _fetchInstances() {
+        }
+        private String saving;
+        private String saveComplete;
+        private String loading;
+        private String loadComplete;
+        private Sys _root;
+        private Sys _parent;
+
+        /**
+         * セーブ中
+         * Saving...
+         */
+        public String saving() { return saving; }
+
+        /**
+         * セーブ完了
+         * Save Complete
+         */
+        public String saveComplete() { return saveComplete; }
+
+        /**
+         * ロード中
+         * Loading...
+         */
+        public String loading() { return loading; }
+
+        /**
+         * ロード完了
+         * Loading Complete
+         */
+        public String loadComplete() { return loadComplete; }
+        public Sys _root() { return _root; }
+        public Sys _parent() { return _parent; }
+    }
     private SequenceSettings sequenceSettings;
     private int dashEnabledFlag;
     private PlayerSpeed playerSpeed;
@@ -756,13 +813,13 @@ public class Sys extends KaitaiStruct {
     private MagicTable magicTable;
     private MenuConfiguration menuConfiguration;
     private Messages messages;
-    private List<Integer> unknown;
+    private SystemMessages systemMessages;
     private String currencyUnit;
     private PlayerConfig playerConfig;
     private PlayerConfig playerConfigTestPlay;
     private int startingMap;
     private List<String> counterNames;
-    private List<Integer> unknown2;
+    private List<Integer> unknown;
     private List<Integer> sounds;
     private String menuBackgroundFilename;
     private MessagesAdditional messagesAdditional;
@@ -778,13 +835,13 @@ public class Sys extends KaitaiStruct {
     public MagicTable magicTable() { return magicTable; }
     public MenuConfiguration menuConfiguration() { return menuConfiguration; }
     public Messages messages() { return messages; }
-    public List<Integer> unknown() { return unknown; }
+    public SystemMessages systemMessages() { return systemMessages; }
     public String currencyUnit() { return currencyUnit; }
     public PlayerConfig playerConfig() { return playerConfig; }
     public PlayerConfig playerConfigTestPlay() { return playerConfigTestPlay; }
     public int startingMap() { return startingMap; }
     public List<String> counterNames() { return counterNames; }
-    public List<Integer> unknown2() { return unknown2; }
+    public List<Integer> unknown() { return unknown; }
 
     /**
      * 0 padded filename of sound effect in Sword of Moonlight's se folder

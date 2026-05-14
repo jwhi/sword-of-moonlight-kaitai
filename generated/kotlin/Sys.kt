@@ -68,10 +68,7 @@ class Sys @JvmOverloads constructor(_io: KaitaiStream?, private val _parent: Kai
         this.magicTable = MagicTable(this._io, this, _root)
         this.menuConfiguration = MenuConfiguration(this._io, this, _root)
         this.messages = Messages(this._io, this, _root)
-        this.unknown = ArrayList<Int?>()
-        for (i in 0..163) {
-            this.unknown!!.add(this._io.readU1())
-        }
+        this.systemMessages = SystemMessages(this._io, this, _root)
         this.currencyUnit =
             String(KaitaiStream.bytesTerminate(this._io.readBytes(3), 0.toByte(), false), Charset.forName("Shift_JIS"))
         this.playerConfig = PlayerConfig(this._io, this, _root)
@@ -86,9 +83,9 @@ class Sys @JvmOverloads constructor(_io: KaitaiStream?, private val _parent: Kai
                 )
             )
         }
-        this.unknown2 = ArrayList<Int?>()
+        this.unknown = ArrayList<Int?>()
         for (i in 0..0) {
-            this.unknown2!!.add(this._io.readU1())
+            this.unknown!!.add(this._io.readU1())
         }
         this.sounds = ArrayList<Int?>()
         for (i in 0..15) {
@@ -115,13 +112,12 @@ class Sys @JvmOverloads constructor(_io: KaitaiStream?, private val _parent: Kai
         this.magicTable!!._fetchInstances()
         this.menuConfiguration!!._fetchInstances()
         this.messages!!._fetchInstances()
-        for (i in this.unknown!!.indices) {
-        }
+        this.systemMessages!!._fetchInstances()
         this.playerConfig!!._fetchInstances()
         this.playerConfigTestPlay!!._fetchInstances()
         for (i in this.counterNames!!.indices) {
         }
-        for (i in this.unknown2!!.indices) {
+        for (i in this.unknown!!.indices) {
         }
         for (i in this.sounds!!.indices) {
         }
@@ -465,13 +461,7 @@ class Sys @JvmOverloads constructor(_io: KaitaiStream?, private val _parent: Kai
     }
 
     /**
-     * Missing some text that is in UI
-     * Missing:
-     * unlocked with key: (empty string)
-     * # At offset 83 60 00
-     * nothing inside: EMPTY
-     * # At offset 83 89 09
-     * seems_to_be_dead: HE IS DEAD
+     * Messages tab is split between here and additional messages field.
      */
     class Messages @JvmOverloads constructor(
         _io: KaitaiStream?,
@@ -999,6 +989,95 @@ class Sys @JvmOverloads constructor(_io: KaitaiStream?, private val _parent: Kai
         }
     }
 
+    /**
+     * Defined in example project, but don't seem to be defined in new projects
+     * for the english translation patch 1.2.
+     * Provided example values and translation for each field.
+     */
+    class SystemMessages @JvmOverloads constructor(
+        _io: KaitaiStream?,
+        private val _parent: Sys? = null,
+        private val _root: Sys? = null
+    ) : KaitaiStruct(_io) {
+        private fun _read() {
+            this.saving = String(
+                KaitaiStream.bytesTerminate(this._io.readBytes(41), 0.toByte(), false),
+                Charset.forName("Shift_JIS")
+            )
+            this.saveComplete = String(
+                KaitaiStream.bytesTerminate(this._io.readBytes(41), 0.toByte(), false),
+                Charset.forName("Shift_JIS")
+            )
+            this.loading = String(
+                KaitaiStream.bytesTerminate(this._io.readBytes(41), 0.toByte(), false),
+                Charset.forName("Shift_JIS")
+            )
+            this.loadComplete = String(
+                KaitaiStream.bytesTerminate(this._io.readBytes(41), 0.toByte(), false),
+                Charset.forName("Shift_JIS")
+            )
+        }
+
+        fun _fetchInstances() {
+        }
+
+        private var saving: String? = null
+        private var saveComplete: String? = null
+        private var loading: String? = null
+        private var loadComplete: String? = null
+
+        init {
+            _read()
+        }
+
+        /**
+         * セーブ中
+         * Saving...
+         */
+        fun saving(): String? {
+            return saving
+        }
+
+        /**
+         * セーブ完了
+         * Save Complete
+         */
+        fun saveComplete(): String? {
+            return saveComplete
+        }
+
+        /**
+         * ロード中
+         * Loading...
+         */
+        fun loading(): String? {
+            return loading
+        }
+
+        /**
+         * ロード完了
+         * Loading Complete
+         */
+        fun loadComplete(): String? {
+            return loadComplete
+        }
+
+        fun _root(): Sys? {
+            return _root
+        }
+
+        override fun _parent(): Sys? {
+            return _parent
+        }
+
+        companion object {
+            @Throws(IOException::class)
+            fun fromFile(fileName: String?): SystemMessages {
+                return SystemMessages(ByteBufferKaitaiStream(fileName))
+            }
+        }
+    }
+
     private var sequenceSettings: SequenceSettings? = null
     private var dashEnabledFlag = 0
     private var playerSpeed: PlayerSpeed? = null
@@ -1007,13 +1086,13 @@ class Sys @JvmOverloads constructor(_io: KaitaiStream?, private val _parent: Kai
     private var magicTable: MagicTable? = null
     private var menuConfiguration: MenuConfiguration? = null
     private var messages: Messages? = null
-    private var unknown: MutableList<Int?>? = null
+    private var systemMessages: SystemMessages? = null
     private var currencyUnit: String? = null
     private var playerConfig: PlayerConfig? = null
     private var playerConfigTestPlay: PlayerConfig? = null
     private var startingMap = 0
     private var counterNames: MutableList<String?>? = null
-    private var unknown2: MutableList<Int?>? = null
+    private var unknown: MutableList<Int?>? = null
     private var sounds: MutableList<Int?>? = null
     private var menuBackgroundFilename: String? = null
     private var messagesAdditional: MessagesAdditional? = null
@@ -1058,8 +1137,8 @@ class Sys @JvmOverloads constructor(_io: KaitaiStream?, private val _parent: Kai
         return messages!!
     }
 
-    fun unknown(): MutableList<Int?> {
-        return unknown!!
+    fun systemMessages(): SystemMessages {
+        return systemMessages!!
     }
 
     fun currencyUnit(): String? {
@@ -1082,8 +1161,8 @@ class Sys @JvmOverloads constructor(_io: KaitaiStream?, private val _parent: Kai
         return counterNames!!
     }
 
-    fun unknown2(): MutableList<Int?> {
-        return unknown2!!
+    fun unknown(): MutableList<Int?> {
+        return unknown!!
     }
 
     /**
