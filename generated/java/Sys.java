@@ -21,6 +21,24 @@ public class Sys extends KaitaiStruct {
         return new Sys(new ByteBufferKaitaiStream(fileName));
     }
 
+    public enum LevelingType {
+        KINGS_FIELD_1(0),
+        KINGS_FIELD_2(1),
+        BALANCED(2),
+        SOLDIER(3),
+        MAGICIAN(4);
+
+        private final long id;
+        LevelingType(long id) { this.id = id; }
+        public long id() { return id; }
+        private static final Map<Long, LevelingType> byId = new HashMap<Long, LevelingType>(5);
+        static {
+            for (LevelingType e : LevelingType.values())
+                byId.put(e.id(), e);
+        }
+        public static LevelingType byId(long id) { return byId.get(id); }
+    }
+
     public enum SequenceMode {
         NONE(0),
         VIDEO(1),
@@ -55,6 +73,7 @@ public class Sys extends KaitaiStruct {
         this.sequenceSettings = new SequenceSettings(this._io, this, _root);
         this.dashEnabledFlag = this._io.readU2le();
         this.playerSpeed = new PlayerSpeed(this._io, this, _root);
+        this.levelingType = LevelingType.byId(this._io.readU1());
         this.classData = new ClassData(this._io, this, _root);
         this.magicTable = new MagicTable(this._io, this, _root);
         this.menuConfiguration = new MenuConfiguration(this._io, this, _root);
@@ -624,8 +643,7 @@ public class Sys extends KaitaiStruct {
         private void _read() {
             this.walk = this._io.readF4le();
             this.dash = this._io.readF4le();
-            this.turnSpeed = this._io.readU1();
-            this.padding = this._io.readU2le();
+            this.turnSpeed = this._io.readU2le();
         }
 
         public void _fetchInstances() {
@@ -633,7 +651,6 @@ public class Sys extends KaitaiStruct {
         private float walk;
         private float dash;
         private int turnSpeed;
-        private int padding;
         private Sys _root;
         private Sys _parent;
 
@@ -657,13 +674,6 @@ public class Sys extends KaitaiStruct {
          * Maximum: 360
          */
         public int turnSpeed() { return turnSpeed; }
-
-        /**
-         * Noticed while parsing evt files that extra null bytes got added to
-         * the end of some sections. Either padding or start of class object.
-         * This has always been 00 00 for files I tested with.
-         */
-        public int padding() { return padding; }
         public Sys _root() { return _root; }
         public Sys _parent() { return _parent; }
     }
@@ -741,6 +751,7 @@ public class Sys extends KaitaiStruct {
     private SequenceSettings sequenceSettings;
     private int dashEnabledFlag;
     private PlayerSpeed playerSpeed;
+    private LevelingType levelingType;
     private ClassData classData;
     private MagicTable magicTable;
     private MenuConfiguration menuConfiguration;
@@ -762,6 +773,7 @@ public class Sys extends KaitaiStruct {
     public SequenceSettings sequenceSettings() { return sequenceSettings; }
     public int dashEnabledFlag() { return dashEnabledFlag; }
     public PlayerSpeed playerSpeed() { return playerSpeed; }
+    public LevelingType levelingType() { return levelingType; }
     public ClassData classData() { return classData; }
     public MagicTable magicTable() { return magicTable; }
     public MenuConfiguration menuConfiguration() { return menuConfiguration; }
