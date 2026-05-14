@@ -16,6 +16,9 @@ seq:
     type: u2
   - id: player_speed
     type: player_speed
+  - id: leveling_type
+    type: u1
+    enum: leveling_type
   - id: class_data
     type: class_data
   - id: magic_table
@@ -145,17 +148,11 @@ types:
           Minimum: 0.1
           Maximum: 10.0
       - id: turn_speed
-        type: u1
+        type: u2
         doc: |
           Turn speed in degrees per second
           Minimum: 1
           Maximum: 360
-      - id: padding
-        type: u2
-        doc: |
-          Noticed while parsing evt files that extra null bytes got added to
-          the end of some sections. Either padding or start of class object.
-          This has always been 00 00 for files I tested with.
   class_data:
     seq:
       - id: names
@@ -345,3 +342,9 @@ enums:
     0: none
     1: video
     2: slideshow
+  leveling_type:
+    0: kings_field_1
+    1: kings_field_2
+    2: balanced
+    3: soldier
+    4: magician
