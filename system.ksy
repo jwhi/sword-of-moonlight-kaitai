@@ -263,6 +263,10 @@ types:
         encoding: Shift_JIS
         size: 41
   system_messages:
+    doc: |
+      Defined in example project, but don't seem to be defined in new projects
+      for the english translation patch 1.2.
+      Provided example values and translation for each field.
     seq:
       - id: saving
         doc: |
