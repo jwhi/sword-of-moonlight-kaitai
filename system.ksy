@@ -27,10 +27,8 @@ seq:
     type: menu_configuration
   - id: messages
     type: messages
-  - id: unknown
-    type: u1
-    repeat: expr
-    repeat-expr: 164
+  - id: system_messages
+    type: system_messages
   - id: currency_unit
     type: strz
     encoding: Shift_JIS
@@ -226,13 +224,7 @@ types:
         value: allow_save_in_menu_flag != 0
   messages:
     doc: |
-      Missing some text that is in UI
-      Missing:
-        unlocked with key: (empty string)
-        # At offset 83 60 00
-        nothing inside: EMPTY
-        # At offset 83 89 09
-        seems_to_be_dead: HE IS DEAD
+      Messages tab is split between here and additional messages field.
     seq:
       - id: sealed
         type: strz
@@ -267,6 +259,36 @@ types:
         encoding: Shift_JIS
         size: 41
       - id: magic_increased
+        type: strz
+        encoding: Shift_JIS
+        size: 41
+  system_messages:
+    seq:
+      - id: saving
+        doc: |
+          セーブ中
+          Saving...
+        type: strz
+        encoding: Shift_JIS
+        size: 41
+      - id: save_complete
+        doc: |
+          セーブ完了
+          Save Complete
+        type: strz
+        encoding: Shift_JIS
+        size: 41
+      - id: loading
+        doc: |
+          ロード中
+          Loading...
+        type: strz
+        encoding: Shift_JIS
+        size: 41
+      - id: load_complete
+        doc: |
+          ロード完了
+          Loading Complete
         type: strz
         encoding: Shift_JIS
         size: 41
