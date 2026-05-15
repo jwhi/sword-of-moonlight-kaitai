@@ -10,3 +10,11 @@ This repo was to allow others (and myself) to compile these structs to their lan
 
 Currently no automated validation.
 You can double check my work and see parsed fields from your files using the [Kaitai Web IDE](https://ide.kaitai.io/). I have been running a copy locally to write and validate structs.
+
+## Example Files
+
+I've been creating an awful map with all the event types to validate.
+
+These files are available in the `example files` folder and also some documentation on how to create movies and images to use in Sword of Moonlight.
+
+You can also use `Sword of Moonlight\SAMPLE\KING'S FIELD` that is provided in the [Internet Archive installer of Sword of Moonlight](https://archive.org/details/so-m-3-d-rpg-maker-install).
