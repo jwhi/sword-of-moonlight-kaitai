@@ -271,6 +271,9 @@ types:
   warp_player_detailed:
     seq:
       - id: map_id
+        doc: |
+          Map to warp player to.
+          00-63
         type: u1
       - id: default_start_point_flag
         doc: |
@@ -316,7 +319,7 @@ types:
         type: u1
       - id: direction
         doc: |
-          Player direction after warp in decrees.
+          Player direction after warp in degrees.
           Minimum: 0
           Maximum: 360
         type: u2
@@ -446,10 +449,22 @@ types:
       - id: z
         type: u1
       - id: angle_x
+        doc: |
+          X rotation after move.
+          Minimum: 0
+          Maximum: 360
         type: u2
       - id: angle_y
+        doc: |
+          Y rotation after move.
+          Minimum: 0
+          Maximum: 360
         type: u2
       - id: angle_z
+        doc: |
+          Z rotation after move.
+          Minimum: 0
+          Maximum: 360
         type: u2
       - id: move_time
         type: u2
