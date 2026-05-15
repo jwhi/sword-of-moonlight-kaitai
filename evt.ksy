@@ -12,10 +12,10 @@ doc-ref:
 seq:
   - id: magic
     contents: [0x00, 0x04, 0x00, 0x00]
-  - id: definition
+  - id: definitions
     type: evt_definition
     repeat: expr
-    repeat-expr: 251
+    repeat-expr: 1024
     
 types:
   evt_definition:
