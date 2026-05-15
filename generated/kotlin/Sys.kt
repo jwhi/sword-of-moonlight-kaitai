@@ -1,4 +1,4 @@
-package com.jwhi.som.domains.generated.system
+package com.jwhi.som.domains.generated
 
 import io.kaitai.struct.ByteBufferKaitaiStream
 import io.kaitai.struct.KaitaiStream
@@ -1169,11 +1169,11 @@ class Sys @JvmOverloads constructor(_io: KaitaiStream?, private val _parent: Kai
      * 0 padded filename of sound effect in Sword of Moonlight's se folder
      * (Sword of Moonlight\data\sound\se).
      * Max value 0xFFFF (65535) is NONE (no sound effect set).
-     * 
+     *
      * Example:
      * Sound 539 (0x21B) is 0539.snd (Wind sound effect)
      * @see [Source](https://doc.swordofmoonlight.com/editor/contentauthoring/auth-sounds/)
-     * 
+     *
      * @see [Source](https://doc.swordofmoonlight.com/editor/ff/snd-file-format/)
      */
     fun sounds(): MutableList<Int?> {

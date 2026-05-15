@@ -325,15 +325,15 @@ public class Evt extends KaitaiStruct {
         if (!(Arrays.equals(this.magic, new byte[] { 0, 4, 0, 0 }))) {
             throw new KaitaiStream.ValidationNotEqualError(new byte[] { 0, 4, 0, 0 }, this.magic, this._io, "/seq/0");
         }
-        this.definition = new ArrayList<EvtDefinition>();
-        for (int i = 0; i < 251; i++) {
-            this.definition.add(new EvtDefinition(this._io, this, _root));
+        this.definitions = new ArrayList<EvtDefinition>();
+        for (int i = 0; i < 1024; i++) {
+            this.definitions.add(new EvtDefinition(this._io, this, _root));
         }
     }
 
     public void _fetchInstances() {
-        for (int i = 0; i < this.definition.size(); i++) {
-            this.definition.get(((Number) (i)).intValue())._fetchInstances();
+        for (int i = 0; i < this.definitions.size(); i++) {
+            this.definitions.get(((Number) (i)).intValue())._fetchInstances();
         }
     }
     public static class ActivateEnemy extends KaitaiStruct {
@@ -675,6 +675,12 @@ public class Evt extends KaitaiStruct {
         private int value;
         private Evt _root;
         private Evt.EvtOperation _parent;
+
+        /**
+         * Player parameter to modify.
+         * Not allowed to update level through Change Player Parameter operation.
+         * Reused player parameter enum from setting parameter into counter.
+         */
         public PlayerParameter parameter() { return parameter; }
         public WayChanged wayChanged() { return wayChanged; }
         public int itemId() { return itemId; }
@@ -745,6 +751,13 @@ public class Evt extends KaitaiStruct {
         }
 
         public void _fetchInstances() {
+        }
+        private Boolean waitForKeyPress;
+        public Boolean waitForKeyPress() {
+            if (this.waitForKeyPress != null)
+                return this.waitForKeyPress;
+            this.waitForKeyPress = duration() == 255;
+            return this.waitForKeyPress;
         }
         private BmpDisplayOptions displayOption;
         private int duration;
@@ -1048,8 +1061,29 @@ public class Evt extends KaitaiStruct {
         public int triggerItem() { return triggerItem; }
         public int triggerCone() { return triggerCone; }
         public int padding() { return padding; }
+
+        /**
+         * Width of the rectangular trigger area.
+         * Each map piece = 2x2
+         * Minimum: 0.0
+         * Maximum: 200.0
+         */
         public float triggerRectWidth() { return triggerRectWidth; }
+
+        /**
+         * Height of the rectangular trigger area.
+         * Each map piece = 2x2
+         * Minimum: 0.0
+         * Maximum: 200.0
+         */
         public float triggerRectHeight() { return triggerRectHeight; }
+
+        /**
+         * Radius of the circular trigger area.
+         * Each map piece = 2x2
+         * Minimum: 0.0
+         * Maximum: 100.0
+         */
         public float triggerRadius() { return triggerRadius; }
         public EvtCondition condition() { return condition; }
         public List<EvtPageOffset> page() { return page; }
@@ -1498,7 +1532,7 @@ public class Evt extends KaitaiStruct {
             _read();
         }
         private void _read() {
-            this.useCounterForMaxValueFlag = this._io.readU1();
+            this.useCounterForMaxValueFlag = this._io.readU2le();
             this.padding = this._io.readU2le();
             this.maxValue = this._io.readU2le();
             this.id = this._io.readU2le();
@@ -1693,8 +1727,26 @@ public class Evt extends KaitaiStruct {
         public int id() { return id; }
         public int x() { return x; }
         public int z() { return z; }
+
+        /**
+         * X rotation after move.
+         * Minimum: 0
+         * Maximum: 360
+         */
         public int angleX() { return angleX; }
+
+        /**
+         * Y rotation after move.
+         * Minimum: 0
+         * Maximum: 360
+         */
         public int angleY() { return angleY; }
+
+        /**
+         * Z rotation after move.
+         * Minimum: 0
+         * Maximum: 360
+         */
         public int angleZ() { return angleZ; }
         public int moveTime() { return moveTime; }
         public float fineX() { return fineX; }
@@ -2105,8 +2157,26 @@ public class Evt extends KaitaiStruct {
         private Evt _root;
         private Evt.EvtOperation _parent;
         public int npcId() { return npcId; }
+
+        /**
+         * X coordinate on current map
+         * Minimum: 1
+         * Maximum: 99
+         */
         public int x() { return x; }
+
+        /**
+         * Z coordinate on current map
+         * Minimum: 1
+         * Maximum: 99
+         */
         public int z() { return z; }
+
+        /**
+         * Direction the NPC will face after warping
+         * Minimum: 1
+         * Maximum: 360
+         */
         public int direction() { return direction; }
         public int padding() { return padding; }
         public float fineX() { return fineX; }
@@ -2235,29 +2305,121 @@ public class Evt extends KaitaiStruct {
         private boolean setFineZ;
         private Evt _root;
         private Evt.EvtOperation _parent;
+
+        /**
+         * Map to warp player to.
+         * 00-63
+         */
         public int mapId() { return mapId; }
+
+        /**
+         * When set, ignores positions defined below and disable editing them
+         * in the event editor. Uses default player spawn position for the
+         * destination map.
+         */
         public int defaultStartPointFlag() { return defaultStartPointFlag; }
+
+        /**
+         * Screen effect to use when warp starts.
+         * Valid values are:
+         *   NONE(0xFFu),
+         *   BLACK FADES OFF(0x00u),
+         *   BLACK FADES ON(0x01u),
+         *   WHITE FADES OFF(0x02u),
+         *   WHITE FADES ON(0x03u)
+         * Used screen effect event enum for convencience.
+         */
         public ScreenEffect screenEffectOnLeave() { return screenEffectOnLeave; }
+
+        /**
+         * Screen effect to use when warp ends.
+         * Valid values are:
+         *   NONE(0xFFu),
+         *   BLACK FADES OFF(0x00u),
+         *   BLACK FADES ON(0x01u),
+         *   WHITE FADES OFF(0x02u),
+         *   WHITE FADES ON(0x03u)
+         * Used screen effect event enum for convencience.
+         */
         public ScreenEffect screenEffectOnEnter() { return screenEffectOnEnter; }
+
+        /**
+         * X coordinate of destination map
+         * Minimum: 1
+         * Maximum: 99
+         */
         public int x() { return x; }
+
+        /**
+         * Z coordinate of destination map
+         * Minimum: 1
+         * Maximum: 99
+         */
         public int z() { return z; }
+
+        /**
+         * Player direction after warp in degrees.
+         * Minimum: 0
+         * Maximum: 360
+         */
         public int direction() { return direction; }
+
+        /**
+         * Distance from center of tile.
+         * Rounding to the first decimal place in the editor
+         * Minimum: -1.0
+         * Maximum: 1.0
+         */
         public float fineX() { return fineX; }
+
+        /**
+         * Vertical position.
+         * Rounding to the first decimal place in the editor
+         * Minimum: -20.0
+         * Maximum: 20.0
+         */
         public float fineY() { return fineY; }
+
+        /**
+         * Distance from center of tile.
+         * Rounding to the first decimal place in the editor
+         * Minimum: -1.0
+         * Maximum: 1.0
+         */
         public float fineZ() { return fineZ; }
+
+        /**
+         * When true, update player direction after warp
+         * When false, value of direction is ignored
+         */
         public boolean setDirection() { return setDirection; }
+
+        /**
+         * When true, use fine x defined position
+         * When false, I don't know. Uses player's fine x position before warp?
+         */
         public boolean setFineX() { return setFineX; }
+
+        /**
+         * When true, use fine y position after warp
+         * When false, I don't know. Use player's y position before warp?
+         */
         public boolean setFineY() { return setFineY; }
+
+        /**
+         * When true, use fine z defined position
+         * When false, I don't know. Uses player's fine z position before warp?
+         */
         public boolean setFineZ() { return setFineZ; }
         public Evt _root() { return _root; }
         public Evt.EvtOperation _parent() { return _parent; }
     }
     private byte[] magic;
-    private List<EvtDefinition> definition;
+    private List<EvtDefinition> definitions;
     private Evt _root;
     private KaitaiStruct _parent;
     public byte[] magic() { return magic; }
-    public List<EvtDefinition> definition() { return definition; }
+    public List<EvtDefinition> definitions() { return definitions; }
     public Evt _root() { return _root; }
     public KaitaiStruct _parent() { return _parent; }
 }

@@ -1,4 +1,4 @@
-package com.jwhi.som.domains.generated.map
+package com.jwhi.som.domains.generated
 
 import io.kaitai.struct.ByteBufferKaitaiStream
 import io.kaitai.struct.KaitaiStream
@@ -7,6 +7,10 @@ import io.kaitai.struct.KaitaiStruct
 import java.io.IOException
 import java.nio.charset.StandardCharsets
 
+/**
+ * Sword of Moonlight EVT file
+ * @see [Source](https://doc.swordofmoonlight.com/editor/ff/map-evt-file-format/)
+ */
 class Evt @JvmOverloads constructor(_io: KaitaiStream?, private val _parent: KaitaiStruct? = null, _root: Evt? = null) :
     KaitaiStruct(_io) {
     enum class BmpDisplayOptions(private val id: Long) {
@@ -383,15 +387,15 @@ class Evt @JvmOverloads constructor(_io: KaitaiStream?, private val _parent: Kai
         if (!(this.magic.contentEquals(byteArrayOf(0, 4, 0, 0)))) {
             throw ValidationNotEqualError(byteArrayOf(0, 4, 0, 0), this.magic, this._io, "/seq/0")
         }
-        this.definition = ArrayList<EvtDefinition?>()
-        for (i in 0..250) {
-            this.definition!!.add(EvtDefinition(this._io, this, _root))
+        this.definitions = ArrayList<EvtDefinition?>()
+        for (i in 0..1023) {
+            this.definitions!!.add(EvtDefinition(this._io, this, _root))
         }
     }
 
     fun _fetchInstances() {
-        for (i in this.definition!!.indices) {
-            this.definition!!.get(((i) as Number).toInt())!!._fetchInstances()
+        for (i in this.definitions!!.indices) {
+            this.definitions!!.get(((i) as Number).toInt())!!._fetchInstances()
         }
     }
 
@@ -796,6 +800,11 @@ class Evt @JvmOverloads constructor(_io: KaitaiStream?, private val _parent: Kai
             _read()
         }
 
+        /**
+         * Player parameter to modify.
+         * Not allowed to update level through Change Player Parameter operation.
+         * Reused player parameter enum from setting parameter into counter.
+         */
         fun parameter(): PlayerParameter? {
             return parameter
         }
@@ -889,6 +898,13 @@ class Evt @JvmOverloads constructor(_io: KaitaiStream?, private val _parent: Kai
         }
 
         fun _fetchInstances() {
+        }
+
+        private var waitForKeyPress: Boolean? = null
+        fun waitForKeyPress(): Boolean {
+            if (this.waitForKeyPress != null) return this.waitForKeyPress!!
+            this.waitForKeyPress = duration() == 255
+            return this.waitForKeyPress!!
         }
 
         private var displayOption: BmpDisplayOptions? = null
@@ -1171,18 +1187,15 @@ class Evt @JvmOverloads constructor(_io: KaitaiStream?, private val _parent: Kai
     }
 
     class EvtCondition @JvmOverloads constructor(
-        _io: KaitaiStream?,
+        io: KaitaiStream?,
         private val _parent: KaitaiStruct? = null,
         private val _root: Evt? = null
-    ) : KaitaiStruct(_io) {
-        private fun _read() {
+    ) : KaitaiStruct(io) {
+        private fun read() {
             this.compareType = CompareType.byId(this._io.readU2le().toLong())
             this.compareId = this._io.readU2le()
             this.comparedValue = this._io.readU2le()
             this.comparison = ComparisonType.byId(this._io.readU2le().toLong())
-        }
-
-        fun _fetchInstances() {
         }
 
         private var compareType: CompareType? = null
@@ -1191,7 +1204,7 @@ class Evt @JvmOverloads constructor(_io: KaitaiStream?, private val _parent: Kai
         private var comparison: ComparisonType? = null
 
         init {
-            _read()
+            read()
         }
 
         fun compareType(): CompareType? {
@@ -1210,14 +1223,6 @@ class Evt @JvmOverloads constructor(_io: KaitaiStream?, private val _parent: Kai
             return comparison
         }
 
-        fun _root(): Evt? {
-            return _root
-        }
-
-        override fun _parent(): KaitaiStruct? {
-            return _parent
-        }
-
         companion object {
             @Throws(IOException::class)
             fun fromFile(fileName: String?): EvtCondition {
@@ -1232,10 +1237,8 @@ class Evt @JvmOverloads constructor(_io: KaitaiStream?, private val _parent: Kai
         private val _root: Evt? = null
     ) : KaitaiStruct(_io) {
         private fun _read() {
-            this.name = String(
-                KaitaiStream.bytesTerminate(this._io.readBytes(31), 0.toByte(), false),
-                StandardCharsets.UTF_8
-            )
+            this.name =
+                String(KaitaiStream.bytesTerminate(this._io.readBytes(31), 0.toByte(), false), StandardCharsets.UTF_8)
             this.targetType = TargetType.byId(this._io.readU1().toLong())
             this.targetId = this._io.readU2le()
             this.triggerType = TriggerType.byId(this._io.readU1().toLong())
@@ -1246,16 +1249,15 @@ class Evt @JvmOverloads constructor(_io: KaitaiStream?, private val _parent: Kai
             this.triggerRectHeight = this._io.readF4le()
             this.triggerRadius = this._io.readF4le()
             this.condition = EvtCondition(this._io, this, _root)
-            this.page = ArrayList<EvtPageOffset?>()
-            for (i in 0..15) {
+            this.page = ArrayList()
+            repeat(16) {
                 this.page!!.add(EvtPageOffset(this._io, this, _root))
             }
         }
 
         fun _fetchInstances() {
-            this.condition!!._fetchInstances()
             for (i in this.page!!.indices) {
-                this.page!!.get(((i) as Number).toInt())!!._fetchInstances()
+                this.page!![i]!!._fetchInstances()
             }
         }
 
@@ -1304,14 +1306,32 @@ class Evt @JvmOverloads constructor(_io: KaitaiStream?, private val _parent: Kai
             return padding
         }
 
+        /**
+         * Width of the rectangular trigger area.
+         * Each map piece = 2x2
+         * Minimum: 0.0
+         * Maximum: 200.0
+         */
         fun triggerRectWidth(): Float {
             return triggerRectWidth
         }
 
+        /**
+         * Height of the rectangular trigger area.
+         * Each map piece = 2x2
+         * Minimum: 0.0
+         * Maximum: 200.0
+         */
         fun triggerRectHeight(): Float {
             return triggerRectHeight
         }
 
+        /**
+         * Radius of the circular trigger area.
+         * Each map piece = 2x2
+         * Minimum: 0.0
+         * Maximum: 100.0
+         */
         fun triggerRadius(): Float {
             return triggerRadius
         }
@@ -1718,7 +1738,6 @@ class Evt @JvmOverloads constructor(_io: KaitaiStream?, private val _parent: Kai
         }
 
         fun _fetchInstances() {
-            this.condition!!._fetchInstances()
             body()
             if (this.body != null) {
                 for (i in this.body!!.indices) {
@@ -1786,7 +1805,7 @@ class Evt @JvmOverloads constructor(_io: KaitaiStream?, private val _parent: Kai
         private val _root: Evt? = null
     ) : KaitaiStruct(_io) {
         private fun _read() {
-            this.useCounterForMaxValueFlag = this._io.readU1()
+            this.useCounterForMaxValueFlag = this._io.readU2le()
             this.padding = this._io.readU2le()
             this.maxValue = this._io.readU2le()
             this.id = this._io.readU2le()
@@ -2042,14 +2061,29 @@ class Evt @JvmOverloads constructor(_io: KaitaiStream?, private val _parent: Kai
             return z
         }
 
+        /**
+         * X rotation after move.
+         * Minimum: 0
+         * Maximum: 360
+         */
         fun angleX(): Int {
             return angleX
         }
 
+        /**
+         * Y rotation after move.
+         * Minimum: 0
+         * Maximum: 360
+         */
         fun angleY(): Int {
             return angleY
         }
 
+        /**
+         * Z rotation after move.
+         * Minimum: 0
+         * Maximum: 360
+         */
         fun angleZ(): Int {
             return angleZ
         }
@@ -2580,14 +2614,29 @@ class Evt @JvmOverloads constructor(_io: KaitaiStream?, private val _parent: Kai
             return npcId
         }
 
+        /**
+         * X coordinate on current map
+         * Minimum: 1
+         * Maximum: 99
+         */
         fun x(): Int {
             return x
         }
 
+        /**
+         * Z coordinate on current map
+         * Minimum: 1
+         * Maximum: 99
+         */
         fun z(): Int {
             return z
         }
 
+        /**
+         * Direction the NPC will face after warping
+         * Minimum: 1
+         * Maximum: 360
+         */
         fun direction(): Int {
             return direction
         }
@@ -2767,58 +2816,136 @@ class Evt @JvmOverloads constructor(_io: KaitaiStream?, private val _parent: Kai
             _read()
         }
 
+        /**
+         * Map to warp player to.
+         * 00-63
+         */
         fun mapId(): Int {
             return mapId
         }
 
+        /**
+         * When set, ignores positions defined below and disable editing them
+         * in the event editor. Uses default player spawn position for the
+         * destination map.
+         */
         fun defaultStartPointFlag(): Int {
             return defaultStartPointFlag
         }
 
+        /**
+         * Screen effect to use when warp starts.
+         * Valid values are:
+         * NONE(0xFFu),
+         * BLACK FADES OFF(0x00u),
+         * BLACK FADES ON(0x01u),
+         * WHITE FADES OFF(0x02u),
+         * WHITE FADES ON(0x03u)
+         * Used screen effect event enum for convencience.
+         */
         fun screenEffectOnLeave(): ScreenEffect? {
             return screenEffectOnLeave
         }
 
+        /**
+         * Screen effect to use when warp ends.
+         * Valid values are:
+         * NONE(0xFFu),
+         * BLACK FADES OFF(0x00u),
+         * BLACK FADES ON(0x01u),
+         * WHITE FADES OFF(0x02u),
+         * WHITE FADES ON(0x03u)
+         * Used screen effect event enum for convencience.
+         */
         fun screenEffectOnEnter(): ScreenEffect? {
             return screenEffectOnEnter
         }
 
+        /**
+         * X coordinate of destination map
+         * Minimum: 1
+         * Maximum: 99
+         */
         fun x(): Int {
             return x
         }
 
+        /**
+         * Z coordinate of destination map
+         * Minimum: 1
+         * Maximum: 99
+         */
         fun z(): Int {
             return z
         }
 
+        /**
+         * Player direction after warp in degrees.
+         * Minimum: 0
+         * Maximum: 360
+         */
         fun direction(): Int {
             return direction
         }
 
+        /**
+         * Distance from center of tile.
+         * Rounding to the first decimal place in the editor
+         * Minimum: -1.0
+         * Maximum: 1.0
+         */
         fun fineX(): Float {
             return fineX
         }
 
+        /**
+         * Vertical position.
+         * Rounding to the first decimal place in the editor
+         * Minimum: -20.0
+         * Maximum: 20.0
+         */
         fun fineY(): Float {
             return fineY
         }
 
+        /**
+         * Distance from center of tile.
+         * Rounding to the first decimal place in the editor
+         * Minimum: -1.0
+         * Maximum: 1.0
+         */
         fun fineZ(): Float {
             return fineZ
         }
 
+        /**
+         * When true, update player direction after warp
+         * When false, value of direction is ignored
+         */
         fun setDirection(): Boolean {
             return setDirection
         }
 
+        /**
+         * When true, use fine x defined position
+         * When false, I don't know. Uses player's fine x position before warp?
+         */
         fun setFineX(): Boolean {
             return setFineX
         }
 
+        /**
+         * When true, use fine y position after warp
+         * When false, I don't know. Use player's y position before warp?
+         */
         fun setFineY(): Boolean {
             return setFineY
         }
 
+        /**
+         * When true, use fine z defined position
+         * When false, I don't know. Uses player's fine z position before warp?
+         */
         fun setFineZ(): Boolean {
             return setFineZ
         }
@@ -2839,8 +2966,8 @@ class Evt @JvmOverloads constructor(_io: KaitaiStream?, private val _parent: Kai
         }
     }
 
-    private var magic: ByteArray? = null
-    private var definition: MutableList<EvtDefinition?>? = null
+    private var magic: ByteArray = ByteArray(0)
+    private var definitions: MutableList<EvtDefinition?>? = null
     private val _root: Evt?
 
     init {
@@ -2849,11 +2976,11 @@ class Evt @JvmOverloads constructor(_io: KaitaiStream?, private val _parent: Kai
     }
 
     fun magic(): ByteArray {
-        return magic ?: ByteArray(0)
+        return magic
     }
 
-    fun definition(): MutableList<EvtDefinition?> {
-        return definition!!
+    fun definitions(): MutableList<EvtDefinition?> {
+        return definitions!!
     }
 
     fun _root(): Evt? {
