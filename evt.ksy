@@ -16,7 +16,9 @@ seq:
     type: evt_definition
     repeat: expr
     repeat-expr: 1024
-    
+    # Can use this condition if events are seqential without gaps
+    # repeat: until
+    # repeat-until: _.target_type == target_type::none
 types:
   evt_definition:
     seq:
@@ -237,6 +239,9 @@ types:
       - id: filename
         type: strz
         encoding: UTF-8
+    instances:
+      wait_for_key_press:
+        value: duration == 255
   display_movie:
     seq:
       - id: filename
@@ -268,32 +273,93 @@ types:
       - id: map_id
         type: u1
       - id: default_start_point_flag
+        doc: |
+          When set, ignores positions defined below and disable editing them
+          in the event editor. Uses default player spawn position for the
+          destination map.
         type: u1
       - id: screen_effect_on_leave
         type: u1
         enum: screen_effect
+        doc: |
+          Screen effect to use when warp starts.
+          Valid values are:
+            NONE(0xFFu),
+            BLACK FADES OFF(0x00u),
+            BLACK FADES ON(0x01u),
+            WHITE FADES OFF(0x02u),
+            WHITE FADES ON(0x03u)
+          Used screen effect event enum for convencience.
       - id: screen_effect_on_enter
         type: u1
         enum: screen_effect
+        doc: |
+          Screen effect to use when warp ends.
+          Valid values are:
+            NONE(0xFFu),
+            BLACK FADES OFF(0x00u),
+            BLACK FADES ON(0x01u),
+            WHITE FADES OFF(0x02u),
+            WHITE FADES ON(0x03u)
+          Used screen effect event enum for convencience.
       - id: x
+        doc: |
+          X coordinate of destination map
+          Minimum: 1
+          Maximum: 99
         type: u1
       - id: z
+        doc: |
+          Z coordinate of destination map
+          Minimum: 1
+          Maximum: 99
         type: u1
       - id: direction
+        doc: |
+          Player direction after warp in decrees.
+          Minimum: 0
+          Maximum: 360
         type: u2
       - id: fine_x
+        doc: |
+          Distance from center of tile.
+          Rounding to the first decimal place in the editor
+          Minimum: -1.0
+          Maximum: 1.0
         type: f4
       - id: fine_y
+        doc: |
+          Vertical position.
+          Rounding to the first decimal place in the editor
+          Minimum: -20.0
+          Maximum: 20.0
         type: f4
       - id: fine_z
+        doc: |
+          Distance from center of tile.
+          Rounding to the first decimal place in the editor
+          Minimum: -1.0
+          Maximum: 1.0
         type: f4
       - id: set_direction
+        doc: |
+          When true, update player direction after warp
+          When false, value of direction is ignored
         type: b1
       - id: set_fine_x
+        doc: |
+          When true, use fine x defined position
+          When false, I don't know. Uses player's fine x position before warp?
         type: b1
       - id: set_fine_y
+        doc: |
+          When true, use fine y position after warp
+          When false, I don't know. Use player's y position before warp?
         type: b1
       - id: set_fine_z
+        doc: |
+          When true, use fine z defined position
+          When false, I don't know. Uses player's fine z position before warp?
         type: b1
     instances:
       use_default_start_point:
@@ -323,6 +389,10 @@ types:
   change_player_parameter:
     seq:
       - id: parameter
+        doc: |
+          Player parameter to modify.
+          Not allowed to update level through Change Player Parameter operation.
+          Reused player parameter enum from setting parameter into counter.
         type: u1
         enum: player_parameter
       - id: way_changed
@@ -456,7 +526,7 @@ types:
   generate_random_counter_value:
     seq:
       - id: use_counter_for_max_value_flag
-        type: u1
+        type: u2
       - id: padding
         type: u2
       - id: max_value
@@ -478,7 +548,6 @@ types:
         type: u1
       - id: destination_counter_id
         type: u2
-      
 enums:
   comparison_type:
     0: equals
