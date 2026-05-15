@@ -41,10 +41,25 @@ types:
       - id: padding
         type: u2
       - id: trigger_rect_width
+        doc: |
+          Width of the rectangular trigger area.
+          Each map piece = 2x2
+          Minimum: 0.0
+          Maximum: 200.0
         type: f4
       - id: trigger_rect_height
+        doc: |
+          Height of the rectangular trigger area.
+          Each map piece = 2x2
+          Minimum: 0.0
+          Maximum: 200.0
         type: f4
       - id: trigger_radius
+        doc: |
+          Radius of the circular trigger area.
+          Each map piece = 2x2
+          Minimum: 0.0
+          Maximum: 100.0
         type: f4
       - id: condition
         type: evt_condition
