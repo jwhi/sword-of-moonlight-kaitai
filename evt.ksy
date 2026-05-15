@@ -156,10 +156,22 @@ types:
         type: u2
       - id: x
         type: u1
+        doc: |
+          X coordinate on current map
+          Minimum: 1
+          Maximum: 99
       - id: z
+        doc: |
+          Z coordinate on current map
+          Minimum: 1
+          Maximum: 99
         type: u1
       - id: direction
         type: u2
+        doc: |
+          Direction the NPC will face after warping
+          Minimum: 1
+          Maximum: 360
       - id: padding
         type: u2
       - id: fine_x
