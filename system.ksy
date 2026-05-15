@@ -1,5 +1,6 @@
 meta:
   id: sys
+  title: Sword of Moonlight SYS.DAT Files
   file-extension: .dat
   ks-version: 0.9
   endian: le
